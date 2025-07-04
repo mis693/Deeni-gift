@@ -1,15 +1,15 @@
-// pages/gift-receiver.js (FIXED: Dua Rendering & Name Replacement)
+// pages/gift-receiver.js (CONFIRM THIS CODE IS APPLIED / NEW FILE IF MISSING)
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 const GiftReceiverPage = () => {
   const router = useRouter();
-  // Sender, duaId, aur receiverName URL query se lenge
-  const { sender, duaId, receiverName } = router.query; 
+  const { sender, duaId } = router.query; 
   const [dua, setDua] = useState(null);
+  const [receiverName, setReceiverName] = useState(''); // Receiver apna naam yahan enter karega
+  const [nameEntered, setNameEntered] = useState(false); // Check if name has been entered
 
-  // Aapki taraf se di gayi nayi duayen (select-gift page wali list se exact match honi chahiye)
   const duas = [
     { id: 'dua1', text: 'Ya Allah! [RECEIVER_NAME] ke har din ko noor se bhar de, uske gham ko khushi mein badal de. Uske har qadam par rehmat barsa, aur uska har faisla uske haq mein behtareen bana de. Ameen.', gif: '/dua1.gif', language: 'Roman Hindi' },
     { id: 'dua2', text: 'Ilahi! [RECEIVER_NAME] ke dil ko sukoon de, uski duaon ko qubool kar, uske raaston ko asaan bana, aur har moorkh dukh se uski hifazat farma. Uski zindagi mein sirf woh laayein jo uske liye behtareen ho. Ameen.', gif: '/dua2.gif', language: 'Roman Hindi' },
@@ -25,12 +25,23 @@ const GiftReceiverPage = () => {
       if (selectedDua) {
         setDua(selectedDua);
       } else {
+        // Fallback for missing duaId or if dua not found
         setDua({ id: 'default', text: 'Aapke liye ek khaas tohfa!', gif: '/islamic-animation.gif' });
       }
     } else {
+      // Fallback if no duaId is provided
       setDua({ id: 'default', text: 'Aapke liye ek khaas tohfa!', gif: '/islamic-animation.gif' });
     }
   }, [duaId]);
+
+  const handleNameSubmit = (e) => {
+    e.preventDefault();
+    if (receiverName.trim()) {
+      setNameEntered(true);
+    } else {
+      alert('Kripya apna naam enter karein!');
+    }
+  };
 
   if (!dua) {
     return (
@@ -41,11 +52,8 @@ const GiftReceiverPage = () => {
   }
 
   const displaySenderName = sender ? decodeURIComponent(sender) : 'Kisi Pyare Ki Taraf Se';
-  // Receiver ka naam URL se aayega, agar nahi hai to "aapke liye"
-  const displayReceiverName = receiverName ? decodeURIComponent(receiverName) : 'aapke liye';
-
-  // Dua ke text mein [RECEIVER_NAME] ko replace karna
-  const finalDuaText = dua.text.replace('[RECEIVER_NAME]', displayReceiverName);
+  // Dua ke text mein [RECEIVER_NAME] ko replace karna agar naam enter ho gaya hai
+  const finalDuaText = nameEntered ? dua.text.replace('[RECEIVER_NAME]', decodeURIComponent(receiverName)) : dua.text.replace('[RECEIVER_NAME]', 'aapke liye');
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center bg-black overflow-hidden p-6">
@@ -55,36 +63,66 @@ const GiftReceiverPage = () => {
       </div>
 
       <div className="relative z-10 p-6 max-w-xl w-full text-center bg-white bg-opacity-10 rounded-xl shadow-xl border border-blue-500 backdrop-blur-sm">
-        <h1 className="text-3xl sm:text-4xl font-extrabold mb-4 text-cyan-400 drop-shadow">
-          {displaySenderName} ka {displayReceiverName} ke liye Khaas Tohfa!
-        </h1>
+        {!nameEntered ? (
+          // Jab tak naam enter nahi hota, yeh dikhega
+          <>
+            <h1 className="text-3xl sm:text-4xl font-extrabold mb-4 text-cyan-400 drop-shadow">
+              {displaySenderName} ki taraf se aapke liye ek tohfa!
+            </h1>
+            <p className="text-gray-200 text-lg sm:text-xl mb-6">
+              Tohfa dekhne ke liye, kripya apna naam enter karein:
+            </p>
+            <form onSubmit={handleNameSubmit} className="flex flex-col gap-4">
+              <input
+                type="text"
+                placeholder="Aapka naam yahan type karein..."
+                value={receiverName}
+                onChange={(e) => setReceiverName(e.target.value)}
+                className="w-full p-3 rounded-lg bg-black bg-opacity-50 text-white border border-gray-600 focus:border-blue-400 focus:ring focus:ring-blue-400 focus:ring-opacity-50 transition-all duration-300 placeholder-gray-400 text-lg"
+              />
+              <button
+                type="submit"
+                className="w-full bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white font-bold py-3 px-6 rounded-lg shadow-lg text-lg transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-green-400 focus:ring-opacity-75"
+              >
+                Tohfa Dekhein
+              </button>
+            </form>
+          </>
+        ) : (
+          // Naam enter hone ke baad, yeh dikhega
+          <>
+            <h1 className="text-3xl sm:text-4xl font-extrabold mb-4 text-cyan-400 drop-shadow">
+              {displaySenderName} ka {decodeURIComponent(receiverName)} ke liye Khaas Tohfa!
+            </h1>
 
-        <div className="bg-white p-2 rounded-lg shadow-inner mb-6 mx-auto border border-blue-400 max-w-xs md:max-w-sm overflow-hidden">
-          <img
-            src={dua.gif}
-            alt={finalDuaText}
-            className="w-full h-auto max-h-64 object-contain rounded-md mx-auto transform hover:scale-105 transition-transform duration-300"
-          />
-        </div>
-        
-        <p className="text-2xl sm:text-3xl font-semibold text-yellow-400 mb-6 animate-pulse-light leading-tight">
-          "{finalDuaText}"
-        </p>
-        
-        <p className="text-gray-200 text-lg sm:text-xl mb-8">
-          Aap bhi yeh khushiyan aage share kar sakte hain!
-        </p>
+            <div className="bg-white p-2 rounded-lg shadow-inner mb-6 mx-auto border border-blue-400 max-w-xs md:max-w-sm overflow-hidden">
+              <img
+                src={dua.gif}
+                alt={finalDuaText}
+                className="w-full h-auto max-h-64 object-contain rounded-md mx-auto transform hover:scale-105 transition-transform duration-300"
+              />
+            </div>
+            
+            <p className="text-2xl sm:text-3xl font-semibold text-yellow-400 mb-6 animate-pulse-light leading-tight">
+              "{finalDuaText}"
+            </p>
+            
+            <p className="text-gray-200 text-lg sm:text-xl mb-8">
+              Aap bhi yeh khushiyan aage share kar sakte hain!
+            </p>
 
-        <button
-          onClick={() => router.push('/')}
-          className="mt-6 bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white font-bold py-3 px-6 rounded-lg shadow-lg text-lg transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-purple-500 focus:ring-opacity-75"
-        >
-          Ek Aur Tohfa Bhejein &rarr;
-        </button>
+            <button
+              onClick={() => router.push('/')}
+              className="mt-6 bg-gradient-to-r from-purple-600 to-indigo-700 hover:from-purple-700 hover:to-indigo-800 text-white font-bold py-3 px-6 rounded-lg shadow-lg text-lg transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-purple-500 focus:ring-opacity-75"
+            >
+              Ek Aur Tohfa Bhejein &rarr;
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
 };
 
 export default GiftReceiverPage;
-    
+                  
