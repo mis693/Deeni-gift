@@ -1,60 +1,61 @@
-// pages/index.js (CONFIRM THIS CODE IS APPLIED)
-
-import React, { useState } from 'react';
+// pages/index.js
+import { useState } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 
-const HomePage = () => {
+export default function Home() {
   const [senderName, setSenderName] = useState('');
   const router = useRouter();
 
   const handleCreateGift = () => {
-    if (!senderName.trim()) {
-      alert('Kripya apna naam enter karein!');
-      return;
+    if (senderName.trim()) {
+      router.push(`/select-gift?sender=${encodeURIComponent(senderName.trim())}`);
+    } else {
+      alert('Kripya apna naam darj karein.');
     }
-    // Sirf sender ka naam select-gift page par bhejenge
-    router.push(`/select-gift?sender=${encodeURIComponent(senderName.trim())}`);
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center bg-black overflow-hidden px-4 sm:px-6 lg:px-8">
-      {/* Background: Falling Stars Animation */}
-      <div className="absolute inset-0 z-0 bg-gradient-to-br from-black to-blue-900 opacity-80">
-        <div className="star"></div><div className="star"></div><div className="star"></div>
-        <div className="star"></div><div className="star"></div><div className="star"></div>
-      </div>
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative overflow-hidden text-white">
+      <Head>
+        <title>Deeni Gift</title>
+        <meta name="description" content="Send beautiful Islamic gifts with duas." />
+      </head>
 
-      <div className="relative z-10 p-6 max-w-2xl w-full text-center bg-white bg-opacity-10 rounded-xl shadow-xl border border-blue-500 backdrop-blur-sm">
-        <div className="mb-8 animate-bounce-subtle">
-          <img src="/islamic-animation.gif" alt="Islamic Blessings Animation" className="mx-auto w-32 h-32 sm:w-48 sm:h-48 rounded-full shadow-lg border-4 border-yellow-400" />
-        </div>
-        <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white mb-6 drop-shadow-lg leading-tight">
-          Deeni Gift ka Gift <span role="img" aria-label="gift">🎁</span>
+      {/* Stars Background */}
+      {[...Array(10)].map((_, i) => (
+        <div key={i} className={`star star-${i + 1}`}></div>
+      ))}
+
+      <div className="relative z-10 bg-gradient-to-br from-purple-700 to-blue-900 p-8 rounded-xl shadow-2xl text-center max-w-md w-full animate-fade-in">
+        <h1 className="text-4xl font-extrabold mb-6 text-yellow-300 drop-shadow-lg">
+          Deeni Gift
         </h1>
-        <p className="text-lg sm:text-xl md:text-2xl text-gray-200 mb-8">
-          Apne pyaron ko ek roohani tohfa bhej kar unka din roshan karein.
+        <p className="text-lg mb-8 text-gray-200">
+          Apne pyaron ko duaon aur tohfon se nawazein.
         </p>
-        
-        <div className="space-y-4 mb-8">
+
+        <div className="mb-6">
+          <label htmlFor="senderName" className="block text-lg font-medium text-gray-100 mb-2">
+            Aapka naam:
+          </label>
           <input
             type="text"
-            placeholder="Aapka naam yahan type karein..."
+            id="senderName"
+            className="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+            placeholder="Yahan apna naam likhein"
             value={senderName}
             onChange={(e) => setSenderName(e.target.value)}
-            className="w-full p-3 rounded-lg bg-black bg-opacity-50 text-white border border-gray-600 focus:border-blue-400 focus:ring focus:ring-blue-400 focus:ring-opacity-50 transition-all duration-300 placeholder-gray-400 text-lg"
           />
         </div>
 
         <button
           onClick={handleCreateGift}
-          className="w-full bg-gradient-to-r from-teal-500 to-blue-600 hover:from-teal-600 hover:to-blue-700 text-white font-bold py-4 px-6 rounded-lg shadow-lg text-xl sm:text-2xl transform hover:scale-105 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-teal-400 focus:ring-opacity-75"
+          className="w-full bg-yellow-500 hover:bg-yellow-600 text-purple-900 font-bold py-3 px-6 rounded-lg text-xl shadow-lg transform transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-4 focus:ring-yellow-400 animate-bounce-subtle"
         >
-          Create Your Gift Link
+          Gift Banayein
         </button>
       </div>
     </div>
   );
-};
-
-export default HomePage;
-              
+}
