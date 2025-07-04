@@ -1,55 +1,53 @@
-// pages/select-gift.js
+// pages/select-gift.js (UPDATED CODE - Aapki Nayi Duayen)
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 const SelectGiftPage = () => {
   const router = useRouter();
-  const { sender } = router.query; // Home page se aaya hua sender ka naam
-  const [selectedDua, setSelectedDua] = useState(null); // Selected dua ka ID store karega
-  const [shareLink, setShareLink] = useState(''); // Generated shareable link
+  const { sender } = router.query;
+  const [selectedDua, setSelectedDua] = useState(null);
+  const [shareLink, setShareLink] = useState('');
 
-  // Duas aur unki GIFs ki list
+  // Aapki taraf se di gayi nayi duayen
   const duas = [
     {
       id: 'dua1',
-      text: 'Allah aapko khushiyan aur barkatein ata farmaye. Ameen.',
+      text: 'Ya Allah! [RECEIVER_NAME] ke har din ko noor se bhar de, uske gham ko khushi mein badal de. Uske har qadam par rehmat barsa, aur uska har faisla uske haq mein behtareen bana de. Ameen.',
       gif: '/dua1.gif', // Make sure this GIF is in public folder
       language: 'Roman Hindi'
     },
     {
       id: 'dua2',
-      text: 'May Allah bless you with peace and prosperity. Ameen.',
+      text: 'Ilahi! [RECEIVER_NAME] ke dil ko sukoon de, uski duaon ko qubool kar, uske raaston ko asaan bana, aur har moorkh dukh se uski hifazat farma. Uski zindagi mein sirf woh laayein jo uske liye behtareen ho. Ameen.',
       gif: '/dua2.gif', // Make sure this GIF is in public folder
-      language: 'English'
+      language: 'Roman Hindi'
     },
     {
       id: 'dua3',
-      text: 'Har mushkil se hifazat farmaye aur zindagi mein kamyabi de. Ameen.',
+      text: 'Ya Rab! [RECEIVER_NAME] jahan bhi rahe, teri rehmat uske saath ho. Har raat uske liye rahat ka sabab ho, har subah naye umeedon ka chiragh ho. Uski zindagi mein har mod par sirf khushi, barkat aur mohabbat ho. Ameen.',
       gif: '/dua3.gif', // Make sure this GIF is in public folder
       language: 'Roman Hindi'
     },
     {
       id: 'dua4',
-      text: 'Wishing you endless blessings and success. Ameen.',
+      text: 'Dear Allah, may You fill [RECEIVER_NAME]’s life with light, replace her sorrows with peace, and guide every step she takes with wisdom and mercy. Let her heart be full of gratitude and her journey filled with purpose. Ameen.',
       gif: '/dua4.gif', // Make sure this GIF is in public folder
       language: 'English'
     },
     {
       id: 'dua5',
-      text: 'Allah aapki har jaayaz dua qubool kare. Ameen.',
+      text: 'May [RECEIVER_NAME]’s heart always find calm even in the storm, and may every tear turn into a smile. May her dreams blossom with grace, and may Allah protect her from pain, granting her only what brings joy and strength. Ameen.',
       gif: '/dua5.gif', // Make sure this GIF is in public folder
-      language: 'Roman Hindi'
+      language: 'English'
+    },
+    {
+      id: 'dua6',
+      text: 'O Allah, bless [RECEIVER_NAME] with endless love, unwavering faith, and a peaceful soul. Let her nights be restful and her days full of light. Whatever burden she carries, ease it. Whatever prayer she whispers, accept it. Ameen.',
+      gif: '/dua6.gif', // Nayi GIF ki zaroorat pad sakti hai, ya existing use karein
+      language: 'English'
     },
   ];
-
-  // Yeh useEffect tab chalta hai jab sender ka naam URL mein change hota hai.
-  // Abhi hum iska zyada use nahi karenge, bas naam display karne ke liye.
-  useEffect(() => {
-    if (sender) {
-      console.log(`Sender: ${decodeURIComponent(sender)}`);
-    }
-  }, [sender]);
 
   // Link generate karne ka function
   const handleGenerateShareLink = () => {
@@ -57,13 +55,10 @@ const SelectGiftPage = () => {
       alert('Kripya pehle koi dua chunein!');
       return;
     }
-    // Final receiver link ko generate karna hai
-    // For example: yourwebsite.com/gift-receiver?sender=SenderName&duaId=dua1
-    const finalLink = `${window.location.origin}/gift-receiver?sender=${encodeURIComponent(sender)}&duaId=${selectedDua}`;
+    const finalLink = `${window.location.origin}/gift-receiver?sender=${encodeURIComponent(sender || 'Aapke Pyare Dost')}&duaId=${selectedDua}`;
     setShareLink(finalLink);
     
-    // Yahan aap ek confirmation message dikha sakti hain ya directly share option open kar sakti hain
-    alert(`Aapka link taiyar hai!\n${finalLink}\nAb aap ise share kar sakti hain!`);
+    alert(`Aapka link taiyar hai!\n\n${finalLink}\n\nAb aap ise share kar sakti hain!`);
   };
 
   // Share button functionality (placeholders)
@@ -85,8 +80,6 @@ const SelectGiftPage = () => {
   };
 
   const shareViaInstagram = () => {
-    // Instagram par direct share link APIs mushkil hain.
-    // Instagram ke liye, user ko link copy karne ke liye kehna behtar hai.
     if (!shareLink) {
       alert('Pehle link generate karein.');
       return;
@@ -98,7 +91,6 @@ const SelectGiftPage = () => {
       console.error('Failed to copy text: ', err);
     });
   };
-
 
   // Donation button functionality
   const handleDonation = () => {
@@ -135,18 +127,30 @@ const SelectGiftPage = () => {
             {duas.map((dua) => (
               <div
                 key={dua.id}
-                className={`p-4 rounded-lg cursor-pointer transition-all duration-300 transform hover:scale-105 border-2 ${
+                className={`p-4 rounded-lg cursor-pointer transition-all duration-300 transform hover:scale-105 border-2 relative ${
                   selectedDua === dua.id ? 'border-cyan-400 bg-blue-700 bg-opacity-30 shadow-lg' : 'border-blue-600 bg-black bg-opacity-40'
                 }`}
                 onClick={() => setSelectedDua(dua.id)}
               >
+                {/* Radio Button for Selection */}
+                <input
+                  type="radio"
+                  name="duaSelection"
+                  id={`radio-${dua.id}`}
+                  value={dua.id}
+                  checked={selectedDua === dua.id}
+                  onChange={() => setSelectedDua(dua.id)}
+                  className="absolute top-3 left-3 w-5 h-5 accent-cyan-400 cursor-pointer"
+                />
+                
+                {/* Ab GIF size ko adjust kiya gaya hai taaki woh text ke saath fit ho */}
                 <img
                   src={dua.gif}
                   alt={dua.text}
-                  className="w-full h-40 object-cover rounded-md mb-3 border border-gray-600 shadow-md"
+                  className="w-full h-36 object-cover rounded-md mb-3 border border-gray-600 shadow-md transform hover:scale-102 transition-transform duration-300"
                 />
-                <p className={`text-lg font-semibold ${selectedDua === dua.id ? 'text-white' : 'text-gray-100'}`}>
-                  {dua.text}
+                <p className={`text-xl font-semibold ${selectedDua === dua.id ? 'text-white' : 'text-gray-100'} mt-2`}>
+                  {dua.text.replace('[RECEIVER_NAME]', sender ? decodeURIComponent(sender) : 'aapke pyare dost')}
                 </p>
                 <span className="text-sm text-gray-400">({dua.language})</span>
               </div>
@@ -222,4 +226,4 @@ const SelectGiftPage = () => {
 };
 
 export default SelectGiftPage;
-      
+          
