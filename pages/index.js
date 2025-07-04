@@ -1,11 +1,10 @@
-// pages/index.js (UPDATED CODE - Receiver Name Input Added)
+// pages/index.js (CONFIRM THIS CODE IS APPLIED)
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 
 const HomePage = () => {
   const [senderName, setSenderName] = useState('');
-  const [receiverName, setReceiverName] = useState(''); // New state for receiver's name
   const router = useRouter();
 
   const handleCreateGift = () => {
@@ -13,29 +12,20 @@ const HomePage = () => {
       alert('Kripya apna naam enter karein!');
       return;
     }
-    if (!receiverName.trim()) {
-      alert('Kripya jisko gift de rahe hain, uska naam enter karein!');
-      return;
-    }
-    // Dono naam query parameters mein bhej rahe hain
-    router.push(`/select-gift?sender=${encodeURIComponent(senderName.trim())}&receiverName=${encodeURIComponent(receiverName.trim())}`);
+    // Sirf sender ka naam select-gift page par bhejenge
+    router.push(`/select-gift?sender=${encodeURIComponent(senderName.trim())}`);
   };
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center bg-black overflow-hidden px-4 sm:px-6 lg:px-8">
       {/* Background: Falling Stars Animation */}
       <div className="absolute inset-0 z-0 bg-gradient-to-br from-black to-blue-900 opacity-80">
-        <div className="star"></div>
-        <div className="star"></div>
-        <div className="star"></div>
-        <div className="star"></div>
-        <div className="star"></div>
-        <div className="star"></div>
+        <div className="star"></div><div className="star"></div><div className="star"></div>
+        <div className="star"></div><div className="star"></div><div className="star"></div>
       </div>
 
       <div className="relative z-10 p-6 max-w-2xl w-full text-center bg-white bg-opacity-10 rounded-xl shadow-xl border border-blue-500 backdrop-blur-sm">
         <div className="mb-8 animate-bounce-subtle">
-          {/* Ensure this GIF path is correct in your public folder */}
           <img src="/islamic-animation.gif" alt="Islamic Blessings Animation" className="mx-auto w-32 h-32 sm:w-48 sm:h-48 rounded-full shadow-lg border-4 border-yellow-400" />
         </div>
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white mb-6 drop-shadow-lg leading-tight">
@@ -53,13 +43,6 @@ const HomePage = () => {
             onChange={(e) => setSenderName(e.target.value)}
             className="w-full p-3 rounded-lg bg-black bg-opacity-50 text-white border border-gray-600 focus:border-blue-400 focus:ring focus:ring-blue-400 focus:ring-opacity-50 transition-all duration-300 placeholder-gray-400 text-lg"
           />
-          <input
-            type="text"
-            placeholder="Jisko gift de rahe hain, uska naam..."
-            value={receiverName}
-            onChange={(e) => setReceiverName(e.target.value)}
-            className="w-full p-3 rounded-lg bg-black bg-opacity-50 text-white border border-gray-600 focus:border-blue-400 focus:ring focus:ring-blue-400 focus:ring-opacity-50 transition-all duration-300 placeholder-gray-400 text-lg"
-          />
         </div>
 
         <button
@@ -74,4 +57,4 @@ const HomePage = () => {
 };
 
 export default HomePage;
-    
+              
