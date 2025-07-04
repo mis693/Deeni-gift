@@ -1,4 +1,4 @@
-// pages/gift-receiver.js (FIXED: Dua Rendering)
+// pages/gift-receiver.js (FIXED: Dua Rendering & Name Replacement)
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -25,11 +25,9 @@ const GiftReceiverPage = () => {
       if (selectedDua) {
         setDua(selectedDua);
       } else {
-        // Fallback if duaId is not found or invalid
         setDua({ id: 'default', text: 'Aapke liye ek khaas tohfa!', gif: '/islamic-animation.gif' });
       }
     } else {
-      // Default behavior if no duaId is provided
       setDua({ id: 'default', text: 'Aapke liye ek khaas tohfa!', gif: '/islamic-animation.gif' });
     }
   }, [duaId]);
@@ -58,13 +56,13 @@ const GiftReceiverPage = () => {
 
       <div className="relative z-10 p-6 max-w-xl w-full text-center bg-white bg-opacity-10 rounded-xl shadow-xl border border-blue-500 backdrop-blur-sm">
         <h1 className="text-3xl sm:text-4xl font-extrabold mb-4 text-cyan-400 drop-shadow">
-          {displaySenderName} ka Aapke liye Khaas Tohfa!
+          {displaySenderName} ka {displayReceiverName} ke liye Khaas Tohfa!
         </h1>
 
         <div className="bg-white p-2 rounded-lg shadow-inner mb-6 mx-auto border border-blue-400 max-w-xs md:max-w-sm overflow-hidden">
           <img
             src={dua.gif}
-            alt={finalDuaText} // Alt text updated to final dua text
+            alt={finalDuaText}
             className="w-full h-auto max-h-64 object-contain rounded-md mx-auto transform hover:scale-105 transition-transform duration-300"
           />
         </div>
